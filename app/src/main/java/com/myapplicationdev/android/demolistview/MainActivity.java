@@ -2,9 +2,13 @@ package com.myapplicationdev.android.demolistview;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -13,22 +17,37 @@ public class MainActivity extends AppCompatActivity {
     ListView lv;
     ArrayAdapter aa;
     ArrayList<Food> food;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lv = this.findViewById(R.id.lvFood);
+        lv = (ListView) this.findViewById(R.id.lvFood);
 
-        //Create a few food objects in Food Array
+        // Create a few food objects in Food array
         food = new ArrayList<Food>();
         food.add(new Food("Ah Lat Coffee", false));
-        food.add(new Food("Mcdonalds", true));
-        food.add(new Food("4Fingers", true));
+        food.add(new Food("Rocky Choc", true));
+        food.add(new Food("Kid Cat Choc", true));
 
-        //Link this activity object, the row.xml layout for
-        //each row and the food string array together
+        // Link this Activity object, the row.xml layout for
+        //  each row and the food String array together
         aa = new FoodAdapter(this, R.layout.row, food);
         lv.setAdapter(aa);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Food selectedFood = food.get(position);
+                String[] info = {selectedFood.getName()};
+                //This is to create an intent to start another activity
+                Intent i = new Intent(MainActivity.this, Main2Activity.class);
+                i.putExtra("info", info);
+                startActivity(i);
+                Toast.makeText(MainActivity.this, selectedFood.getName() + " Star: " +
+                        selectedFood.isStar(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
